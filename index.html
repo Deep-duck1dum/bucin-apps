@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamu Mau Gak? 💕</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Patrick Hand', cursive;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffd6e8, #fff0f5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.screen {
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #ff4d88;
+  margin-bottom: 30px;
+}
+
+.buttons {
+  position: relative;
+  height: 200px;
+}
+
+button {
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#yesBtn {
+  background: #ff5fa2;
+  color: white;
+  box-shadow: 0 0 15px rgba(255,95,162,0.6);
+  animation: glow 1.5s infinite alternate;
+}
+
+#noBtn {
+  background: #eee;
+  color: #555;
+  position: absolute;
+  left: 50%;
+  top: 80px;
+  transform: translateX(-50%);
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 10px #ff8fc1; }
+  to { box-shadow: 0 0 25px #ff2f92; }
+}
+
+.small-text {
+  font-size: 1rem;
+  color: #ff6f9f;
+  margin-bottom: 10px;
+}
+
+/* Hearts */
+.heart {
+  position: absolute;
+  color: #ff5fa2;
+  animation: float 1.5s ease-out forwards;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+}
+
+/* Final Screen */
+#final {
+  display: none;
+  text-align: center;
+}
+
+#final h1 {
+  font-size: 2.3rem;
+}
+
+#hugBtn {
+  margin-top: 20px;
+  background: #ffb3d9;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Opening Screen -->
+<div class="screen" id="opening">
+  <h1>Kamu mau gak jadi cewe aku? 💕</h1>
+
+  <div class="buttons">
+    <div class="small-text" id="noText"></div>
+    <button id="yesBtn">Iya 💖</button>
+    <button id="noBtn">No 🙃</button>
+  </div>
+</div>
+
+<!-- Final Screen -->
+<div class="screen" id="final">
+  <h1>
+    Yeay 💖<br><br>
+    Makasih ya sudah mau jadi bagian dari hidup aku.<br>
+    Aku janji bakal jaga kamu sebaik mungkin 🤍
+  </h1>
+  <button id="hugBtn">Peluk Virtual 🤗</button>
+</div>
+
+<!-- Audio -->
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/03/23/audio_63c8a4b68c.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const noText = document.getElementById("noText");
+const bgm = document.getElementById("bgm");
+
+bgm.volume = 0.3;
+bgm.play();
+
+let noCount = 0;
+const noMessages = [
+  "Eh kok lari? 😭",
+  "Jangan galak dong~",
+  "Klik yang satunya aja 💕",
+  "Aku kan baik 😢"
+];
+
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("click", moveNo);
+
+function moveNo() {
+  noCount++;
+  noText.innerText = noMessages[Math.floor(Math.random()*noMessages.length)];
+
+  if (noCount >= 4) {
+    noBtn.style.display = "none";
+    noText.innerText = "Hehe… tinggal satu pilihan 😌";
+    return;
+  }
+
+  const x = Math.random() * 200 - 100;
+  const y = Math.random() * 120;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+/* YES CONFIRMATION */
+let yesStep = 0;
+const yesTexts = ["Iya 💖","Yakin","Banget","Serius","Siap 💖"];
+const confirmTexts = [
+  "Kamu yakin nih? 🤍",
+  "Beneran mau jadi cewe aku? 💕",
+  "Ini serius ya, gak bercanda? 😳",
+  "Kalau sudah klik ini, gak bisa kabur~ 💍",
+  "Terakhir… kamu siap bahagia bareng aku? 💖"
+];
+
+yesBtn.addEventListener("click", () => {
+  createHeart();
+
+  if (yesStep < 5) {
+    document.querySelector("h1").innerText = confirmTexts[yesStep];
+    yesBtn.innerText = yesTexts[yesStep];
+    yesStep++;
+
+    if (yesStep === 5) {
+      bgm.volume = 0.5;
+    }
+  } else {
+    document.getElementById("opening").style.display = "none";
+    document.getElementById("final").style.display = "block";
+    confettiHearts();
+  }
+});
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "💖";
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.top = "70%";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1500);
+}
+
+function confettiHearts() {
+  setInterval(() => {
+    createHeart();
+  }, 300);
+}
+
+document.getElementById("hugBtn").onclick = () => {
+  alert("🤗 Pelukan terkirim penuh cinta!");
+};
+</script>
+
+</body>
+</html>
